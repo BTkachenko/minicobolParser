@@ -15,40 +15,68 @@
 
 miniCobolFile ::= cobolLine*
 
-private cobolLine ::= lineNumber lineBody
+private cobolLine ::= LINE_NUMBER lineBody
 
-lineNumber ::= INT
+lineBody ::= identificationDivisionHeader
+           | programIdHeader
+           | dataDivisionHeader
+           | workingStorageSectionHeader
+           | dataDescriptionEntry
+           | procedureDivisionHeader
+           | paragraphHeader
+           | statementLine
 
-lineBody ::= identificationDivision
-           | programId
-           | dataDivision
-           | workingStorageSection
-           | dataDecl
-           | procedureDivision
-           | paragraph
-           | statement
+identificationDivisionHeader ::= IDENTIFICATION DIVISION DOT
+programIdHeader ::= PROGRAM_ID DOT IDENTIFIER DOT
+dataDivisionHeader ::= DATA DIVISION DOT
+workingStorageSectionHeader ::= WORKING_STORAGE SECTION DOT
+procedureDivisionHeader ::= PROCEDURE DIVISION DOT
 
-identificationDivision ::= IDENTIFICATION DIVISION DOT
-programId ::= 'PROGRAM-ID' DOT IDENTIFIER DOT
-dataDivision ::= DATA DIVISION DOT
-workingStorageSection ::= WORKING_STORAGE SECTION DOT
-procedureDivision ::= PROCEDURE DIVISION DOT
+paragraphHeader ::= IDENTIFIER DOT
 
-paragraph ::= IDENTIFIER DOT
+dataDescriptionEntry ::= INTEGER IDENTIFIER pictureClause dataValueClause? DOT
+dataValueClause ::= VALUE literal
 
-dataDecl ::= levelNumber IDENTIFIER PIC picture valueClause? DOT
-levelNumber ::= INT
-picture ::= DIGIT9 LPAREN INT RPAREN
-valueClause ::= VALUE (INT | STRING)
+/* picture-clause = ( "PICTURE" | "PIC" ) [ "IS" ] picture-string */
+pictureClause ::= (PIC | PICTURE) IS? pictureString
 
-statement ::= performStmt
-            | stopStmt
-            | displayStmt
+/* picture-string = currency? (picchar+ repeat?)+ (punctuation (picchar+ repeat?)+)* */
+pictureString ::= CURRENCY? pictureGroup+ (PUNCTUATION pictureGroup+)*
 
-performStmt ::= PERFORM IDENTIFIER VARYING IDENTIFIER FROM INT BY INT UNTIL condition DOT?
-condition ::= IDENTIFIER EQ INT
+pictureGroup ::= picChar+ repeat?
+picChar ::= PICCHAR
+repeat ::= LPAREN INTEGER RPAREN
 
-stopStmt ::= STOP RUN DOT
+statementLine ::= performStatement | stopStatement | displayStatement
 
-displayStmt ::= DISPLAY displayOperand+ DOT
-displayOperand ::= STRING | IDENTIFIER | INT
+performStatement ::= PERFORM IDENTIFIER performVaryingPhrase DOT?
+performVaryingPhrase ::= performTestPhrase? VARYING IDENTIFIER FROM performFrom BY performBy UNTIL condition
+performTestPhrase ::= WITH? TEST (BEFORE | AFTER)
+
+performFrom ::= IDENTIFIER | literal
+performBy ::= IDENTIFIER | literal
+
+stopStatement ::= STOP (RUN | literal) DOT?
+
+displayStatement ::= DISPLAY displayOperand+ displayUponPhrase? displayAdvancingPhrase? DOT?
+displayOperand ::= IDENTIFIER | literal
+displayUponPhrase ::= UPON IDENTIFIER
+displayAdvancingPhrase ::= WITH? NO ADVANCING
+
+literal ::= INTEGER | STRING
+
+condition ::= combinableCondition ((AND | OR) combinableCondition)*
+combinableCondition ::= NOT? simpleCondition
+
+simpleCondition ::= relationCondition | LPAREN condition RPAREN
+relationCondition ::= arithmeticExpression relationalOperator arithmeticExpression
+arithmeticExpression ::= IDENTIFIER | INTEGER
+
+relationalOperator ::= IS? (
+      (NOT? (GREATER THAN? | GT | LESS THAN? | LT | EQUAL TO? | EQ))
+    | (GREATER THAN? OR EQUAL TO?)
+    | GE
+    | (LESS THAN? OR EQUAL TO?)
+    | LE
+    | (LT EQ)
+)

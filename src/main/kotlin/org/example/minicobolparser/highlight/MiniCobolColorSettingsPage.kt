@@ -4,7 +4,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
-import com.intellij.openapi.options.colors.ColorDescriptor.EMPTY_ARRAY
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import org.example.minicobolparser.MiniCobolIcons
 import javax.swing.Icon
@@ -40,9 +39,10 @@ class MiniCobolColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor("String", MiniCobolSyntaxHighlighter.STRING),
         AttributesDescriptor("Operator/Punctuation", MiniCobolSyntaxHighlighter.OPERATOR),
         AttributesDescriptor("Bad character", MiniCobolSyntaxHighlighter.BAD_CHAR),
-    )
+        AttributesDescriptor("Line number", MiniCobolSyntaxHighlighter.LINE_NUMBER),
+        AttributesDescriptor("Picture string", MiniCobolSyntaxHighlighter.PICTURE_STRING),
+        )
 
-    override fun getColorDescriptors(): Array<ColorDescriptor> = EMPTY_ARRAY
-
+    override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
     override fun getDisplayName(): String = "MiniCobol"
 }

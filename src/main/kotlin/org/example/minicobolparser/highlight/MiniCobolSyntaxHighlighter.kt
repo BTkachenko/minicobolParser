@@ -13,16 +13,21 @@ import org.example.minicobolparser.psi.MiniCobolTypes
 class MiniCobolSyntaxHighlighter : SyntaxHighlighter {
     override fun getHighlightingLexer(): Lexer = MiniCobolLexerAdapter()
 
-
-    override fun getTokenHighlights(tokenType: IElementType): Array<out TextAttributesKey?> =
+    override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
         when (tokenType) {
             TokenType.BAD_CHARACTER -> pack(BAD_CHAR)
 
+            MiniCobolTypes.LINE_NUMBER -> pack(LINE_NUMBER)
+            MiniCobolTypes.INTEGER -> pack(NUMBER)
             MiniCobolTypes.STRING -> pack(STRING)
-            MiniCobolTypes.INT -> pack(NUMBER)
+            MiniCobolTypes.PICTURE_STRING -> pack(PICTURE_STRING)
 
             MiniCobolTypes.DOT,
             MiniCobolTypes.EQ,
+            MiniCobolTypes.GT,
+            MiniCobolTypes.LT,
+            MiniCobolTypes.GE,
+            MiniCobolTypes.LE,
             MiniCobolTypes.LPAREN,
             MiniCobolTypes.RPAREN -> pack(OPERATOR)
 
@@ -34,25 +39,42 @@ class MiniCobolSyntaxHighlighter : SyntaxHighlighter {
             MiniCobolTypes.SECTION,
             MiniCobolTypes.PROCEDURE,
             MiniCobolTypes.PIC,
+            MiniCobolTypes.PICTURE,
             MiniCobolTypes.VALUE,
             MiniCobolTypes.PERFORM,
             MiniCobolTypes.VARYING,
             MiniCobolTypes.FROM,
             MiniCobolTypes.BY,
             MiniCobolTypes.UNTIL,
+            MiniCobolTypes.WITH,
+            MiniCobolTypes.TEST,
+            MiniCobolTypes.BEFORE,
+            MiniCobolTypes.AFTER,
             MiniCobolTypes.STOP,
             MiniCobolTypes.RUN,
             MiniCobolTypes.DISPLAY,
-            MiniCobolTypes.DIGIT9 -> pack(KEYWORD)
+            MiniCobolTypes.UPON,
+            MiniCobolTypes.NO,
+            MiniCobolTypes.ADVANCING,
+            MiniCobolTypes.IS,
+            MiniCobolTypes.NOT,
+            MiniCobolTypes.GREATER,
+            MiniCobolTypes.LESS,
+            MiniCobolTypes.THAN,
+            MiniCobolTypes.EQUAL,
+            MiniCobolTypes.TO,
+            MiniCobolTypes.AND,
+            MiniCobolTypes.OR -> pack(KEYWORD)
 
             MiniCobolTypes.IDENTIFIER -> pack(IDENTIFIER)
 
             TokenType.WHITE_SPACE -> EMPTY_KEYS
-
             else -> EMPTY_KEYS
         }
-    companion object{
-        val EMPTY_KEYS : Array<TextAttributesKey> = emptyArray()
+
+    companion object {
+        val EMPTY_KEYS: Array<TextAttributesKey> = emptyArray()
+
         val KEYWORD: TextAttributesKey =
             TextAttributesKey.createTextAttributesKey("MINICOBOL_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
 
@@ -62,8 +84,14 @@ class MiniCobolSyntaxHighlighter : SyntaxHighlighter {
         val NUMBER: TextAttributesKey =
             TextAttributesKey.createTextAttributesKey("MINICOBOL_NUMBER", DefaultLanguageHighlighterColors.NUMBER)
 
+        val LINE_NUMBER: TextAttributesKey =
+            TextAttributesKey.createTextAttributesKey("MINICOBOL_LINE_NUMBER", DefaultLanguageHighlighterColors.LINE_COMMENT)
+
         val STRING: TextAttributesKey =
             TextAttributesKey.createTextAttributesKey("MINICOBOL_STRING", DefaultLanguageHighlighterColors.STRING)
+
+        val PICTURE_STRING: TextAttributesKey =
+            TextAttributesKey.createTextAttributesKey("MINICOBOL_PICTURE_STRING", DefaultLanguageHighlighterColors.STRING)
 
         val OPERATOR: TextAttributesKey =
             TextAttributesKey.createTextAttributesKey("MINICOBOL_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
@@ -71,7 +99,6 @@ class MiniCobolSyntaxHighlighter : SyntaxHighlighter {
         val BAD_CHAR: TextAttributesKey =
             TextAttributesKey.createTextAttributesKey("MINICOBOL_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
 
-        private fun pack(key: TextAttributesKey): Array<TextAttributesKey> = arrayOf(key)
+        fun pack(key: TextAttributesKey): Array<TextAttributesKey> = arrayOf(key)
     }
-
 }
