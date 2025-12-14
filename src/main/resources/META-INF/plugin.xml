@@ -37,6 +37,12 @@
         <lang.parserDefinition
                 language="MiniCobol"
                 implementationClass="org.example.minicobolparser.MiniCobolParserDefinition"/>
+        <lang.syntaxHighlighterFactory
+                language="MiniCobol"
+                implementationClass="org.example.minicobolparser.highlight.MiniCobolSyntaxHighlighterFactory"/>
+
+        <colorSettingsPage
+                implementation="org.example.minicobolparser.highlight.MiniCobolColorSettingsPage"/>
 
     </extensions>
 </idea-plugin>
