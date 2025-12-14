@@ -1,0 +1,54 @@
+{
+  parserClass="org.example.minicobolparser.parser.MiniCobolParser"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="MiniCobol"
+  psiImplClassSuffix="Impl"
+
+  psiPackage="org.example.minicobolparser.psi"
+  psiImplPackage="org.example.minicobolparser.psi.impl"
+
+  elementTypeHolderClass="org.example.minicobolparser.psi.MiniCobolTypes"
+  elementTypeClass="org.example.minicobolparser.psi.MiniCobolElementType"
+  tokenTypeClass="org.example.minicobolparser.psi.MiniCobolTokenType"
+}
+
+miniCobolFile ::= cobolLine*
+
+private cobolLine ::= lineNumber lineBody
+
+lineNumber ::= INT
+
+lineBody ::= identificationDivision
+           | programId
+           | dataDivision
+           | workingStorageSection
+           | dataDecl
+           | procedureDivision
+           | paragraph
+           | statement
+
+identificationDivision ::= IDENTIFICATION DIVISION DOT
+programId ::= 'PROGRAM-ID' DOT IDENTIFIER DOT
+dataDivision ::= DATA DIVISION DOT
+workingStorageSection ::= WORKING_STORAGE SECTION DOT
+procedureDivision ::= PROCEDURE DIVISION DOT
+
+paragraph ::= IDENTIFIER DOT
+
+dataDecl ::= levelNumber IDENTIFIER PIC picture valueClause? DOT
+levelNumber ::= INT
+picture ::= DIGIT9 LPAREN INT RPAREN
+valueClause ::= VALUE (INT | STRING)
+
+statement ::= performStmt
+            | stopStmt
+            | displayStmt
+
+performStmt ::= PERFORM IDENTIFIER VARYING IDENTIFIER FROM INT BY INT UNTIL condition DOT?
+condition ::= IDENTIFIER EQ INT
+
+stopStmt ::= STOP RUN DOT
+
+displayStmt ::= DISPLAY displayOperand+ DOT
+displayOperand ::= STRING | IDENTIFIER | INT
