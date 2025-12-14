@@ -34,5 +34,9 @@
                 fieldName="INSTANCE"
                 extensions="cbl"/>
 
+        <lang.parserDefinition
+                language="MiniCobol"
+                implementationClass="org.example.minicobolparser.MiniCobolParserDefinition"/>
+
     </extensions>
 </idea-plugin>
